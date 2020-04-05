@@ -46,27 +46,22 @@ class Game(Ui_Dialog):
         cells=self.level.cells
         size=self.level.size
         validator=Validator()
-        answerInput={} #{'a':[1,2,3],'b':[2,4],...}
         
-        for index in range(len(cells)):
-            cell=cells[index]
-            answer=int(self.table_kenken.item(index//size,index%size).text())
-            if cell not in answerInput:
-                answerInput[cell]=[]
-            answerInput[cell].append(answer)
-        
+        try:
+            answerInput=self.loadAnswer() #{'a':[1,2,3],'b':[2,4],...}
+        except:
+            QMessageBox.about(self,"Sorry :(","Your input is invalid, try again!")
+            return
         print(answerInput)
         print(self.level.rules)
         correctAnswer=True
+
         for cell in answerInput:
             rule=self.level.rules[cell]
-            try:
-                if not validator.validateAnswer(answerInput[cell],rule):
-                    correctAnswer=False
-                    break
-            except:
+            if not validator.validateAnswer(answerInput[cell],rule):
                 correctAnswer=False
                 break
+        
         if(correctAnswer):
             QMessageBox.about(self,"Congratulations","Your answer is perfect!")
         else:
@@ -94,13 +89,24 @@ class Game(Ui_Dialog):
             cell=cells[index]
             self.table_kenken.setItem(index//size, index%size, QtWidgets.QTableWidgetItem())
             self.table_kenken.item(index//size,index%size).setBackground(QtGui.QColor(*self.colorCoding[cell]))
-            self.table_kenken.item(index//size,index%size).setText('0')
 
+    def loadAnswer(self):
+        answerInput={}
+        cells=self.level.cells
+        size=self.level.size
+        for index in range(len(cells)):
+            cell=cells[index]
+            answer=int(self.table_kenken.item(index//size,index%size).text())
+            if cell not in answerInput:
+                answerInput[cell]=[]
+            answerInput[cell].append(answer)
+        return answerInput
+        
 
 
     def loadColor(self):
         colorPool="""\
-101 76 121,\
+100 100 222,\
 119 38 187,\
 195 35 57,\
 149 69 160,\

@@ -12,10 +12,8 @@ def playLevel(level):
     answerCorrect = False
     while(answerCorrect == False):
 
-        # type(answer):string
-        answer = input("Enter your answer seperated by space: ")
-        # type(answer):list of str
-        answer = answer.split(' ')
+        answer = input("Enter your answer seperated by space: ") # type(answer):string
+        answer = answer.split(' ') # type(answer):list of str
 
         answerCorrect = validator.validateAnswer(answer, rule)
 
