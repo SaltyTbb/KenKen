@@ -3,7 +3,12 @@ class Validator(object):
         total = 0
         for num in answer:
             total += int(num)
+        """
+        the for-loop can be replaced by
+        return sum(list(map(lambda x: int(x), answer))) == expectedAnswer
+        """
         return total == expectedAnswer
+    
     def validateMinus(self,answer,expectedAnswer):
         num1 = int(answer[0])
         num2 = int(answer[1])
@@ -33,11 +38,6 @@ class Validator(object):
         expectedAnswer = int(rule[:-1])
         if(operater == '+'):
             return self.validatePlus(answer,expectedAnswer)
-
-            """
-            the for-loop can be replaced by
-            return sum(list(map(lambda x: int(x), answer))) == expectedAnswer
-            """
 
         elif(operater == '-'):
             return self.validateMinus(answer,expectedAnswer)
