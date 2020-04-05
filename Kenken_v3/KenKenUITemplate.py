@@ -21,9 +21,10 @@ class Ui_Dialog(QtWidgets.QWidget):
         self.table_kenken = QtWidgets.QTableWidget(Dialog)
         self.table_kenken.setEnabled(True)
         self.table_kenken.setGeometry(QtCore.QRect(60, 90, 425, 425))
+        self.table_kenken.setMinimumSize(QtCore.QSize(425, 425))
+        self.table_kenken.setMaximumSize(QtCore.QSize(425, 425))
         self.table_kenken.setStyleSheet("font: 24pt \"MS Shell Dlg 2\";\n"
-"font: 63 24pt \"Segoe UI Semibold\";\n"
-"border-color: rgb(255, 255, 255);")
+"font: 63 24pt \"Segoe UI Semibold\";")
         self.table_kenken.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.table_kenken.setTextElideMode(QtCore.Qt.ElideMiddle)
         self.table_kenken.setObjectName("table_kenken")
