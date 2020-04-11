@@ -10,20 +10,21 @@ class Game(Ui_Dialog):
 
     level=Level({},"")
     colorCoding={}
+    possibleSolutions=[]
 
     def loadLevel(self):
         
         super().loadLevel()
         levelInput=int(self.txt_level.toPlainText())
         
+        
         file=open("./level/lvl_{}.txt".format(levelInput))
-
         rules=file.readline().strip().split(' ')
-        rulesDict={rule.split('=')[0]:rule.split('=')[1] for rule in rules}
         cells=file.readline()
         
-
+        rulesDict={rule.split('=')[0]:rule.split('=')[1] for rule in rules}
         self.level=Level(rulesDict,cells)
+
         self.table_kenken.setColumnCount(self.level.size)
         self.table_kenken.setRowCount(self.level.size)
         self.initCells(cells)
@@ -44,29 +45,19 @@ class Game(Ui_Dialog):
     def submitAnswer(self):
         super().submitAnswer()
         cells=self.level.cells
-        size=self.level.size
-        validator=Validator()
         
         try:
             answerInput=self.loadAnswer() #{'a':[1,2,3],'b':[2,4],...}
         except:
             QMessageBox.about(self,"Sorry :(","Your input is invalid, try again!")
             return
-        print(answerInput)
-        print(self.level.rules)
-        correctAnswer=True
 
-        for cell in answerInput:
-            rule=self.level.rules[cell]
-            if not validator.validateAnswer(answerInput[cell],rule):
-                correctAnswer=False
-                break
-        
-        if(correctAnswer):
+        if(self.validateAnswer(answerInput)):
             QMessageBox.about(self,"Congratulations","Your answer is perfect!")
         else:
             QMessageBox.about(self,"Sorry :(","Your answer is wrong, try harder!")
 
+    
             
 
     def clear(self):
@@ -77,8 +68,38 @@ class Game(Ui_Dialog):
 
     def solve(self):
         super().solve()
+        initSolution='0'*len(self.level.cells)
 
-    
+        self.findAllSolutions(initSolution)
+        solution=None
+        for possibleSolution in self.possibleSolutions:
+            if self.isTrueSolution(possibleSolution):
+                solution=possibleSolution
+                break
+        
+        size=self.level.size
+        for index in range(len(solution)):
+            self.table_kenken.item(index//size,index%size).setText(solution[index])
+        
+    def isTrueSolution(self,solution):
+        answerInput={}
+        for index in range(len(solution)):
+            cell=self.level.cells[index]
+            answer=solution[index]
+            if cell not in answerInput:
+                answerInput[cell]=[]
+            answerInput[cell].append(answer)
+
+        return self.validateAnswer(answerInput)
+
+    def validateAnswer(self,answerInput):
+        validator=Validator()
+        for cell in answerInput:
+            rule=self.level.rules[cell]
+            if not validator.validateAnswer(answerInput[cell],rule):
+                return False
+        return True
+
     def initCells(self,cells):
         
         self.loadColor()
@@ -100,9 +121,18 @@ class Game(Ui_Dialog):
             if cell not in answerInput:
                 answerInput[cell]=[]
             answerInput[cell].append(answer)
-        return answerInput
+        return answerInput#{'a':[1,2,3],'b':[2,4],...}
         
-
+    def findAllSolutions(self,currSolution):
+        currIndex=currSolution.find('0')
+        size=self.level.size
+        if(currIndex==-1):
+            self.possibleSolutions.append(currSolution)
+        else:
+            excludedNumbers={currSolution[index] for index in range(len(currSolution)) if currIndex % size == index % size or currIndex // size == index // size}
+            for number in set('123456789'[:size])-excludedNumbers:
+                self.findAllSolutions(currSolution[:currIndex] + number + currSolution[currIndex+1:])
+        
 
     def loadColor(self):
         colorPool="""\

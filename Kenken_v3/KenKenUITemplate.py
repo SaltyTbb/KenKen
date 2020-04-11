@@ -112,7 +112,7 @@ class Ui_Dialog(QtWidgets.QWidget):
 
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "Dialog"))
+        Dialog.setWindowTitle(_translate("Dialog", "KenKen"))
         item = self.table_kenken.verticalHeaderItem(0)
         item.setText(_translate("Dialog", "New Row"))
         item = self.table_kenken.verticalHeaderItem(1)
@@ -153,11 +153,6 @@ class Ui_Dialog(QtWidgets.QWidget):
         ans=QMessageBox.question(self,"Quit","Sure to quit KenKen?",QMessageBox.Yes|QMessageBox.No)
         if ans==QMessageBox.Yes:
             sys.exit()
-
-
-
-
-    
 
     def loadLevel(self):
         pass
